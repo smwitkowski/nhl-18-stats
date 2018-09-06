@@ -98,11 +98,18 @@ def read_image(image, type):
 
 
 def find_largest_area(contours):
+    # Create an empty list that will be populated later
     area_list = []
+
+    # Loop through the contours given by the user
     for cnt in contours:
+        # Find the area based on the values provided by boundingRect
+        # Append to the list created above
         x, y, w, h = cv2.boundingRect(cnt)
         area = w * h
         area_list.append(area)
+
+    # Sort the list and return the x, y, w, and h values for the contour with the largest area
     area_list_sort = sorted(area_list)
     x, y, w, h = cv2.boundingRect(area_list_sort[-1])
     return x, y, w, h
@@ -124,9 +131,12 @@ def read_team_and_score(image, gray_image):
     # TODO Use template matching to identify the scorebox, instead of size of contours
     x, y, w, h = find_largest_area(contours)
 
-    # Crop the image
+    # Crop the image to the area defined in the function above and resize
     score_box = image[y:y + h, x:x + w]
     score_box = cv2.resize(score_box, (1000, 1000))
+
+    # Crop the image for each item of interest
+    # I tested the X and Y coordinates to find the correct location, but it could be done in a different way.
     home_score = score_box[40:220, 400:475]
     home_team = score_box[40:165, 150:250]
     away_score = score_box[40:220, 500:575]
