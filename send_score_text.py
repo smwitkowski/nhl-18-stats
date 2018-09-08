@@ -9,7 +9,8 @@ def connect_to_client(account_sid, acount_token):
 
 
 def send_EoG_text(numbers, stats, client):
-    away_team, away_score, home_team, home_score, id = stats
+    print(stats)
+    home_team, away_team, home_score, away_score, id = stats
     time.sleep(5)
     messages = client.messages.list()
 
@@ -38,7 +39,7 @@ def send_EoG_text(numbers, stats, client):
 
 
 def verify_response(stats, client):
-    away_team, away_score, home_team, home_score, id = stats
+    home_team, away_team, home_score, away_score, id = stats
     messages = client.messages.list()
     home_regex = r'\w{1,}(?=( was ' + home_team + '))'
     away_regex = r'\w{1,}(?=( was ' + away_team + '))'
@@ -75,7 +76,7 @@ def verify_response(stats, client):
 
 
 def find_players(stats, client):
-    away_team, away_score, home_team, home_score, id = stats
+    home_team, away_team, home_score, away_score, id = stats
     messages = client.messages.list()
     home_regex = r'(?i)\w{1,}(?=( was ' + home_team + '))'
     away_regex = r'(?i)\w{1,}(?=( was ' + away_team + '))'
@@ -84,20 +85,3 @@ def find_players(stats, client):
     p1 = re.search(home_regex, message).group()
     p2 = re.search(away_regex, message).group()
     return p1, p2
-
-numbers_to_text = [
-    '+13016534336'
-    # ,'+12404296800'
-    # ,'+12408390994'
-    # ,'+13478615875'
-    # ,'+13015805831'
-]
-
-stats = ['WIN', '4', 'WAS', '5', 'A1550']
-client = connect_to_client()
-send_EoG_text(numbers_to_text, stats, account_sid, auth_token)
-verification = False
-while not verification:
-    verification = verify_response(stats, account_sid, auth_token)
-
-home_player, away_player = find_players(stats, client)

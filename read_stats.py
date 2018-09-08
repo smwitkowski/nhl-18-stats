@@ -15,12 +15,11 @@ def find_largest_area(contours):
         area_list.append(area)
 
     # Sort the list and return the x, y, w, and h values for the contour with the largest area
-    area_list_sort = sorted(area_list)
-    x, y, w, h = cv2.boundingRect(area_list_sort[-1])
+    x, y, w, h = cv2.boundingRect(contours[area_list.index(max(area_list))])
     return x, y, w, h
 
 
-def read_team_and_score(image, gray_image):
+def crop_team_and_score(image, gray_image):
     # If the user specified that the image is not already gray, convert it to gray
     if not gray_image:
         image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
