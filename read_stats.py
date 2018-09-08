@@ -15,7 +15,7 @@ def find_largest_area(contours):
         area_list.append(area)
 
     # Sort the list and return the x, y, w, and h values for the contour with the largest area
-    x, y, w, h = cv2.boundingRect(contours[area_list.index(max(area_list))])
+    x, y, w, h = cv2.boundingRect(contours[area_list.index(max(area_list, default=0))])
     return x, y, w, h
 
 

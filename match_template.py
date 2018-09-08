@@ -1,7 +1,7 @@
 import cv2
 
 
-def read_templat_files():
+def read_template_files():
     first_period_temp = cv2.imread("templates/first-period-temp.jpg", 0)
     first_period_temp = cv2.Canny(first_period_temp, 50, 200)
     first_intermission_temp = cv2.imread("templates/first-intermission-temp.jpg", 0)
@@ -27,7 +27,8 @@ def read_templat_files():
 
     return templates, score_box_temp
 
-def find_template(image, templates):
+
+def find_template(image, temp):
     # Create an empty list
     # This list will be populated with the max value from each template
     matches = []
@@ -35,7 +36,28 @@ def find_template(image, templates):
 
     # Loop through the templates provided
     # Note: It's OK if only one template is provided
-    for temp in templates:
+    match = cv2.matchTemplate(image, temp, cv2.TM_CCOEFF_NORMED)
+    # Extract values using minMacLoc on the match created above
+
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(match)
+    # Append the max value to the matches list created outside the loop
+
+    matches.append(max_val)
+    print(max_val)
+
+    # Return the largest value in the matches list
+    return max(matches)
+
+
+def find_templates(image, temps):
+    # Create an empty list
+    # This list will be populated with the max value from each template
+    matches = []
+    # locs = []
+
+    # Loop through the templates provided
+    # Note: It's OK if only one template is provided
+    for temp in temps:
         # Match the template to the image the user provided
         match = cv2.matchTemplate(image, temp, cv2.TM_CCOEFF_NORMED)
 
@@ -44,10 +66,10 @@ def find_template(image, templates):
 
         # Append the max value to the matches list created outside the loop
         matches.append(max_val)
+        print(max_val)
         #locs.append(max_loc)
 
     # Return the largest value in the matches list
-    print(max(matches))
     return max(matches)
 
 
@@ -57,7 +79,7 @@ def match_templates(image, score_template, pause_templates, gray_image):
     if not gray_image:
         image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    # Convert the image to a canny outline
+    # Convert the image to a canny outlin
     canny = cv2.Canny(image, 50, 200)
 
     # find_template returns the highest value matching the templates provided.
@@ -73,7 +95,7 @@ def match_templates(image, score_template, pause_templates, gray_image):
         #cv2.rectangle(canny, top_left, bottom_right, 255, 2)
         # Loop through all the pause templates (defined by the user) and match the templates to the image
         # Return the highest matching value of all the templates
-        pause_val = find_template(canny, pause_templates)
+        pause_val = find_templates(canny, pause_templates)
 
         # If the value is below the threshold, then the template is not present.
         # If this is true for all the templates, then we know the game has ended and is not just paused.
