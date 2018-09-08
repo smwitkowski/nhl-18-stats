@@ -4,7 +4,6 @@ import cv2
 import pytesseract
 import time
 
-
 def find_template(image, templates):
     matches = []
     for temp in templates:
@@ -102,8 +101,6 @@ def crop_image(image):
     away_team = score_box[40:165, 750:850]
 
     return away_score, away_team, home_score, home_team
-
-
 if __name__ == "__main__":
     first_period_temp = cv2.imread("templates/first-period-temp.jeg", 0)
     first_period_temp = cv2.Canny(first_period_temp, 50, 200)
@@ -136,7 +133,7 @@ if __name__ == "__main__":
     # camera.shutter_speed = 10000
     # camera.brightness = 50
     # camera.exposure_mode = "off"
-    # camera.drc_strength = 'high'
+    #camera.drc_strength = 'high'
 
     game_complete = False
     while game_complete is not True:

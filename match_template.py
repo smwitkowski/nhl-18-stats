@@ -45,6 +45,7 @@ def find_template(image, templates):
         matches.append(max_val)
 
     # Return the largest value in the matches list
+    print(max(matches))
     return max(matches)
 
 
@@ -63,7 +64,7 @@ def match_templates(image, score_template, pause_templates, gray_image):
     score_val = find_template(canny, score_template)
 
     # Continue if score_val is greater than the threshold set by the user
-    if score_val > .5:
+    if score_val > .35:
 
         # Loop through all the pause templates (defined by the user) and match the templates to the image
         # Return the highest matching value of all the templates
@@ -71,7 +72,9 @@ def match_templates(image, score_template, pause_templates, gray_image):
 
         # If the value is below the threshold, then the template is not present.
         # If this is true for all the templates, then we know the game has ended and is not just paused.
-        if pause_val < .75:
+        if pause_val < .5:
             return 1
+        else:
+            return 0
     else:
         return 0
