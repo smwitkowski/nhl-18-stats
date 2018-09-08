@@ -70,9 +70,6 @@ def read_stats(image, type):
                                    21)
     kernel = cv2.getStructuringElement(cv2.MORPH_CROSS, (3, 3))
     eroded = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel)
-    cv2.imshow("Eroded", eroded)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
     # If the image type is the team name, then continue
     if type.lower() == "name":
         # read_name returns a cropped image of the file
