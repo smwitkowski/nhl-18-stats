@@ -95,11 +95,9 @@ numbers_to_text = [
 
 stats = ['WIN', '4', 'WAS', '5', 'A1550']
 client = connect_to_client()
-# send_EoG_text(numbers_to_text, stats, account_sid, auth_token)
-# verification = False
-# while not verification:
-#    verification = verify_response(stats, account_sid, auth_token)
+send_EoG_text(numbers_to_text, stats, account_sid, auth_token)
+verification = False
+while not verification:
+    verification = verify_response(stats, account_sid, auth_token)
 
-home_player, away_player = find_players(stats, account_sid, auth_token)
-
-print(home_player, away_player)
+home_player, away_player = find_players(stats, client)
