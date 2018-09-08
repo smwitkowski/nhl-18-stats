@@ -31,6 +31,7 @@ def find_template(image, templates):
     # Create an empty list
     # This list will be populated with the max value from each template
     matches = []
+    # locs = []
 
     # Loop through the templates provided
     # Note: It's OK if only one template is provided
@@ -43,6 +44,7 @@ def find_template(image, templates):
 
         # Append the max value to the matches list created outside the loop
         matches.append(max_val)
+        #locs.append(max_loc)
 
     # Return the largest value in the matches list
     print(max(matches))
@@ -65,7 +67,10 @@ def match_templates(image, score_template, pause_templates, gray_image):
 
     # Continue if score_val is greater than the threshold set by the user
     if score_val > .35:
-
+        # top_left = score_loc
+        # x, y, w, h = score_template.shape()
+        # bottom_right = (top_left[0] + w, top_left[1] + h)
+        #cv2.rectangle(canny, top_left, bottom_right, 255, 2)
         # Loop through all the pause templates (defined by the user) and match the templates to the image
         # Return the highest matching value of all the templates
         pause_val = find_template(canny, pause_templates)
@@ -75,6 +80,11 @@ def match_templates(image, score_template, pause_templates, gray_image):
         if pause_val < .5:
             return 1
         else:
+            # top_left = pause_loc
+            # x, y, w, h = pause_templates[pause_templates.index(pause_val)].shape()
+            # bottom_right = (top_left[0] + w, top_left[1] + h)
+            # cv2.rectangle(canny, top_left, bottom_right, 255, 2)
+            #cv2.imshow("Canny Matches", canny)
             return 0
     else:
         return 0

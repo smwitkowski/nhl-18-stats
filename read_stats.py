@@ -68,12 +68,16 @@ def read_stats(image, type):
                                    cv2.THRESH_BINARY_INV,
                                    31,
                                    21)
-
+    kernel = cv2.getStructuringElement(cv2.MORPH_CROSS, (3, 3))
+    eroded = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel)
+    cv2.imshow("Eroded", eroded)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
     # If the image type is the team name, then continue
     if type.lower() == "name":
         # read_name returns a cropped image of the file
         # TODO Make the cropped images more accurate so cropping is unneccesary
-        image_iso = read_name(thresh)
+        image_iso = read_name(eroded)
 
         # Use tesseract to read the cropped image.
         # The configuration only allows letters to be returned.
@@ -86,7 +90,7 @@ def read_stats(image, type):
     elif type.lower() == 'score':
         # Use tesseract to read the cropped image.
         # The configuration only allows numbers to be returned.
-        text = pytesseract.image_to_string(thresh, config="-c tessedit_char_whitelist=1234567890 -psm 6")
+        text = pytesseract.image_to_string(eroded, config="-c tessedit_char_whitelist=1234567890 -psm 6")
         return text
     else:
         return "Please define the type of picture. It's either a 'name' or 'score'."
