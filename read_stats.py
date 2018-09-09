@@ -42,9 +42,9 @@ def crop_team_and_score(image, gray_image):
     # Crop the image for each item of interest
     # I tested the X and Y coordinates to find the correct location, but it could be done in a different way.
     home_score = score_box[40:220, 400:475]
-    home_team = score_box[40:165, 150:250]
+    home_team = score_box[40:160, 150:250]
     away_score = score_box[40:220, 500:575]
-    away_team = score_box[40:165, 750:850]
+    away_team = score_box[40:150, 750:850]
 
     return away_score, away_team, home_score, home_team
 
@@ -62,24 +62,22 @@ def read_stats(image, type):
     # Apply adaptive thresholding to the image
     # The image 'lighting; will rarely change.
     # TODO change the adaptiveThreshold to threshold
-    thresh = cv2.adaptiveThreshold(image,
-                                   255,
-                                   cv2.ADAPTIVE_THRESH_MEAN_C,
-                                   cv2.THRESH_BINARY_INV,
-                                   31,
-                                   21)
+    _, thresh = cv2.threshold(image, 100, 255, cv2.THRESH_BINARY_INV)
     kernel = cv2.getStructuringElement(cv2.MORPH_CROSS, (3, 3))
-    eroded = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel)
+    opened = cv2.erode(thresh, kernel, iterations=2)
+    cv2.imshow("Image", opened)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
     # If the image type is the team name, then continue
     if type.lower() == "name":
         # read_name returns a cropped image of the file
         # TODO Make the cropped images more accurate so cropping is unneccesary
-        image_iso = read_name(eroded)
+        # image_iso = read_name(eroded)
 
         # Use tesseract to read the cropped image.
         # The configuration only allows letters to be returned.
         # In addition, no_dict removes the dictionary requirement so team abbreviations can be read
-        text = pytesseract.image_to_string(image_iso,
+        text = pytesseract.image_to_string(opened,
                                            config="-c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ -psm 7 -oem 2 no_dict")
         return text
 
@@ -87,7 +85,7 @@ def read_stats(image, type):
     elif type.lower() == 'score':
         # Use tesseract to read the cropped image.
         # The configuration only allows numbers to be returned.
-        text = pytesseract.image_to_string(eroded, config="-c tessedit_char_whitelist=1234567890 -psm 6")
+        text = pytesseract.image_to_string(opened, config="-c tessedit_char_whitelist=1234567890 -psm 6")
         return text
     else:
         return "Please define the type of picture. It's either a 'name' or 'score'."
